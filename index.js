@@ -87,10 +87,16 @@ app.post('/api/persons', (request, response) => {
     }
   
     persons = persons.concat(person)
-    response.json(person)
+    response.status(201).json(person)
 })
 
 const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+  }
+  
+app.use(unknownEndpoint)
