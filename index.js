@@ -17,30 +17,6 @@ morgan.token('data', (request) => {
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
 
-
-let persons = [
-    { 
-      "id": 1,
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
-
 const getRandomId = (min, max) => {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -65,14 +41,17 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
+    // const person = persons.find(person => person.id === id)
 
-    if (person) {    
-        response.json(person)  
-    } else {    
-        response.status(404).end()  
-    }
+    Note.findById(request.params.id).then(person => {
+        response.json(person)
+      })
+
+    // if (person) {    
+    //     response.json(person)  
+    // } else {    
+    //     response.status(404).end()  
+    // }
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -84,26 +63,26 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
-    const found = persons.find(person => person.name === body.name)
+    // const found = persons.find(person => person.name === body.name)
   
     if (!body.name || !body.number) {
         return response.status(400).json({ 
             error: `${!body.name ? 'name' : 'number'} missing`
         })
-    } else if (found) {
-        return response.status(400).json({ 
-            error: 'name must be unique '
-        })
-    }
+    } // else if (found) {
+    //     return response.status(400).json({ 
+    //         error: 'name must be unique '
+    //     })
+    // }
   
-    const person = {
-      id: getRandomId(1, 1000),
-      name: body.name,
-      number: body.number
-    }
+    const person = new Person({
+        name: body.name,
+        number: body.number
+    })
   
-    persons = persons.concat(person)
-    response.status(201).json(person)
+    person.save().then(savedNote => {
+        response.status(201).json(savedNote)
+      })
 })
 
 const PORT = process.env.PORT
