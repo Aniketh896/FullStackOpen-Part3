@@ -72,14 +72,15 @@ app.post('/api/persons', (request, response, next) => {
     
     Person.find({ name: body.name })
         .then(person => {
-            console.log(person)
             if (person.length > 0) {
 
                 const updatedPerson = {
                     number: body.number
                 }
                 
-                Person.findByIdAndUpdate(person[0]._id.toString(), updatedPerson, { new: true })
+                const id = person[0]._id.toString()
+
+                Person.findByIdAndUpdate(id, updatedPerson, { new: true })
                     .then(updatedPerson => {
                       response.json(updatedPerson)
                     })
