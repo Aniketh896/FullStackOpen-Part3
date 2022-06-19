@@ -72,6 +72,7 @@ app.post('/api/persons', (request, response, next) => {
     
     Person.find({ name: body.name })
         .then(person => {
+            console.log(person)
             if (person) {
 
                 const updatedPerson = {
