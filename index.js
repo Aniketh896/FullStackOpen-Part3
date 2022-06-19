@@ -79,7 +79,7 @@ app.post('/api/persons', (request, response, next) => {
                     number: body.number
                 }
                 
-                Person.findByIdAndUpdate(person._id, updatedPerson, { new: true })
+                Person.findByIdAndUpdate(person[0]._id.toString(), updatedPerson, { new: true })
                     .then(updatedPerson => {
                       response.json(updatedPerson)
                     })
