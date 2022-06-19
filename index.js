@@ -40,19 +40,18 @@ app.get('/api/persons', (request, response) => {
     })
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
     // const person = persons.find(person => person.id === id)
 
     Person.findById(request.params.id)
         .then(person => {
-            response.json(person)
+            if (person) {
+                response.json(person)
+              } else {
+                response.status(404).end()
+              }
         })
-
-    // if (person) {    
-    //     response.json(person)  
-    // } else {    
-    //     response.status(404).end()  
-    // }
+        .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
@@ -102,3 +101,16 @@ const unknownEndpoint = (request, response) => {
   }
   
 app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+  
+    if (error.name === 'CastError') {
+      return response.status(400).send({ error: 'malformatted id' })
+    } 
+  
+    next(error)
+  }
+  
+  // this has to be the last loaded middleware.
+  app.use(errorHandler)
