@@ -1,6 +1,9 @@
 const express = require('express')
 const app = express()
 
+const morgan = require('morgan')
+app.use(morgan('tiny'))
+
 app.use(express.json())
 
 let persons = [
@@ -31,7 +34,6 @@ const getRandomId = (min, max) => {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1) + min)
   }
-  
 
 app.get('/', (request, response) => {
     response.send('<h1>Root URL | Go To /api/persons for PhoneBook</h1>')
