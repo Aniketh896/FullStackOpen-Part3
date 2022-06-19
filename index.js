@@ -17,12 +17,6 @@ morgan.token('data', (request) => {
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
 
-const getRandomId = (min, max) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1) + min)
-  }
-
 app.get('/', (request, response) => {
     response.send('<h1>Root URL | Go To /api/persons for PhoneBook</h1>')
 })
@@ -41,7 +35,6 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
-    // const person = persons.find(person => person.id === id)
 
     Person.findById(request.params.id)
         .then(person => {
@@ -55,6 +48,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
+
     Person.findByIdAndRemove(request.params.id)
       .then(result => {
 
@@ -65,31 +59,59 @@ app.delete('/api/persons/:id', (request, response, next) => {
         }
       })
       .catch(error => next(error))
-  })
+})
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
-    // const found = persons.find(person => person.name === body.name)
   
     if (!body.name || !body.number) {
         return response.status(400).json({ 
             error: `${!body.name ? 'name' : 'number'} missing`
         })
-    } // else if (found) {
-    //     return response.status(400).json({ 
-    //         error: 'name must be unique '
-    //     })
-    // }
-  
-    const person = new Person({
-        name: body.name,
-        number: body.number
-    })
-  
-    person.save().then(savedNote => {
-        response.status(201).json(savedNote)
-      })
+    }
+    
+    Person.find({ name: body.name })
+        .then(person => {
+            if (person) {
+
+                const updatedPerson = {
+                    number: body.number
+                }
+                
+                Person.findByIdAndUpdate(person.id, updatedPerson, { new: true })
+                    .then(updatedPerson => {
+                      response.json(updatedPerson)
+                    })
+
+            } else {
+
+                const person = new Person({
+                    name: body.name,
+                    number: body.number
+                })
+              
+                person.save().then(savedNote => {
+                    response.status(201).json(savedNote)
+                })
+              }
+        })
+        .catch(error => next(error))
 })
+
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body
+  
+    const person = {
+      name: body.name,
+      number: body.number,
+    }
+  
+    Person.findByIdAndUpdate(request.params.id, person, { new: true })
+      .then(updatedPerson => {
+        response.json(updatedPerson)
+      })
+      .catch(error => next(error))
+  })
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
