@@ -1,1 +1,1 @@
-DELETE  https://stark-dusk-84066.herokuapp.com/api/persons/62af53e7fcbd8785e4e5c710
+DELETE  https://stark-dusk-84066.herokuapp.com/api/persons/62af540cfcbd8785e4e5c714
