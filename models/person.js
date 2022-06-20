@@ -18,9 +18,16 @@ const personSchema = new mongoose.Schema({
     },
     number: {
         type: String,
+        minLength: 8,
+        validate: [customValidator, 'Number should be of the form \d{2,3}-\d{1,}'],
         required: true
     }
   })
+
+const customValidator = (value) => {
+    const regex = new RegExp('\d{2,3}-\d{1,}');
+    return regex.test(value)
+}
 
 personSchema.set('toJSON', {
     transform: (document, returnedObject) => {
