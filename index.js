@@ -100,6 +100,7 @@ app.post('/api/persons', (request, response, next) => {
                 .catch(error => next(error))
               }
         })
+        .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
