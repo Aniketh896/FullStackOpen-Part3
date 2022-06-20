@@ -25,7 +25,7 @@ const personSchema = new mongoose.Schema({
         type: String,
         minLength: 8,
         validate: {
-            validator: function(value) {
+            validator: (value) => {
                 if (value.includes("-")) {
                     return /\d{2,3}-\d{1,}/.test(value)
                 }
