@@ -75,18 +75,7 @@ app.post('/api/persons', (request, response, next) => {
     Person.find({ name: body.name })
         .then(person => {
             if (person.length > 0) {
-
-                const updatedPerson = {
-                    number: body.number
-                }
-                
-                const id = person[0]._id.toString()
-
-                Person.findByIdAndUpdate(id, updatedPerson, { new: true })
-                    .then(updatedPerson => {
-                      response.json(updatedPerson)
-                    })
-
+                response.status(409).json({ error: `${body.name} Already exists in the Phonebook` })
             } else {
 
                 const person = new Person({
