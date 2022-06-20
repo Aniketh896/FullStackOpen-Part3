@@ -10,6 +10,11 @@ mongoose.connect(url)
         console.log('error connecting to MongoDB:', error.message)  
     })
 
+const customValidator = (value) => {
+    const regex = new RegExp('\d{2,3}-\d{1,}');
+    return regex.test(value)
+}
+
 const personSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -23,11 +28,6 @@ const personSchema = new mongoose.Schema({
         required: true
     }
   })
-
-const customValidator = (value) => {
-    const regex = new RegExp('\d{2,3}-\d{1,}');
-    return regex.test(value)
-}
 
 personSchema.set('toJSON', {
     transform: (document, returnedObject) => {
