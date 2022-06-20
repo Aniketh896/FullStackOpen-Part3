@@ -97,9 +97,9 @@ app.post('/api/persons', (request, response, next) => {
                 person.save().then(savedNote => {
                     response.status(201).json(savedNote)
                 })
+                .catch(error => next(error))
               }
         })
-        .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
