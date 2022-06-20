@@ -2,6 +2,6 @@ POST https://stark-dusk-84066.herokuapp.com/api/persons/
 Content-Type: application/json
 
 { 
-    "name": "Er", 
-    "number": "12341234"
+    "name": "Eras", 
+    "number": "123-1234532"
 }

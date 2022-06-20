@@ -10,10 +10,10 @@ mongoose.connect(url)
         console.log('error connecting to MongoDB:', error.message)  
     })
 
-const customValidator = (value) => {
-    const regex = new RegExp('\d{2,3}-\d{1,}');
-    return regex.test(value)
-}
+// const customValidator = (value) => {
+//     const regex = new RegExp('\d{2,3}-\d{1,}');
+//     return regex.test(value)
+// }
 
 const personSchema = new mongoose.Schema({
     name: {
@@ -24,7 +24,12 @@ const personSchema = new mongoose.Schema({
     number: {
         type: String,
         minLength: 8,
-        validate: [customValidator, 'Number should be of the form \d{2,3}-\d{1,}'],
+        validate: {
+            validator: function(v) {
+              return /\d{2,3}-\d{1,}/.test(v) || /\d{1,}/.test(v);
+            },
+            message: props => `${props.value} is not a valid phone number!`
+          },
         required: true
     }
   })
